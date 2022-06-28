@@ -1,10 +1,5 @@
 package com.rrd12.taskmaster.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,22 +7,22 @@ import android.preference.PreferenceManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.rrd12.taskmaster.R;
 import com.rrd12.taskmaster.adapter.TaskListRecViewAdapter;
-import com.rrd12.taskmaster.database.TaskMasterDatabase;
 import com.rrd12.taskmaster.models.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences preferences;
-    TaskMasterDatabase taskMasterDatabase;
     public static final String TASK_TITLE = "Task Title";
     public static final String TASK_BODY = "Task Body";
     public static final String TASK_STATE = "Task State";
-    public static final String DATABASE_NAME = "task_list";
     public static final String TASK_SIZE = "size";
     TaskListRecViewAdapter adapter;
     List<Task> tasks = null;
@@ -39,14 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        taskMasterDatabase = Room.databaseBuilder(
-                        getApplicationContext(),
-                        TaskMasterDatabase.class,
-                        DATABASE_NAME)
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
-        tasks = taskMasterDatabase.taskDao().findAll();
         taskListRecView();
 
         setUpAddTask();
@@ -59,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         updateUsername();
 
-        tasks.clear();
-        tasks.addAll(taskMasterDatabase.taskDao().findAll());
         adapter.notifyDataSetChanged();
     }
 
@@ -68,15 +53,13 @@ public class MainActivity extends AppCompatActivity {
         buttonGo(findViewById(id), new Intent(MainActivity.this, c));
     }
     private void buttonGo(Button button, Intent goWhere){
-        button.setOnClickListener(v->{
-            startActivity(goWhere);
-        });
+        button.setOnClickListener(v-> startActivity(goWhere));
     }
 
     private void setUpAddTask(){
         findViewById(R.id.addTaskButton).setOnClickListener(v ->{
             Intent goToAddTask = new Intent(MainActivity.this, AddTask.class);
-            goToAddTask.putExtra(TASK_SIZE,tasks.size());
+//            goToAddTask.putExtra(TASK_SIZE,tasks.size());
             startActivity(goToAddTask);
         });
     }

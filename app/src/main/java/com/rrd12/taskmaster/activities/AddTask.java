@@ -1,7 +1,7 @@
 package com.rrd12.taskmaster.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
+
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rrd12.taskmaster.R;
-import com.rrd12.taskmaster.database.TaskMasterDatabase;
 import com.rrd12.taskmaster.models.StateEnum;
 import com.rrd12.taskmaster.models.Task;
 
@@ -21,25 +20,17 @@ import java.util.Date;
 
 public class AddTask extends AppCompatActivity {
 
-    TaskMasterDatabase taskMasterDatabase;
-    public static final String DATABASE_NAME = "task_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-        taskMasterDatabase = Room.databaseBuilder(
-                        getApplicationContext(),
-                        TaskMasterDatabase.class,
-                        DATABASE_NAME)
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
+
 
         setUpSpinner();
         setUpTotalTask();
-        setUpAddButton(taskMasterDatabase);
+//        setUpAddButton(); //TODO: fix database association
     }
 
     private void setUpSpinner() {
@@ -51,7 +42,8 @@ public class AddTask extends AppCompatActivity {
         ));
     }
 
-    private void setUpAddButton(TaskMasterDatabase database){
+    //TODO: fix database association
+    private void setUpAddButton(){
         Button addTask = AddTask.this.findViewById(R.id.addTaskB);
         Spinner taskStateSpinner = findViewById(R.id.taskStateSpinner);
         addTask.setOnClickListener(v -> {
@@ -59,9 +51,7 @@ public class AddTask extends AppCompatActivity {
             String taskBodyInput = ((EditText) findViewById(R.id.taskBodyInput)).getText().toString();
             Date newDate = new Date();
             StateEnum state = StateEnum.fromString(taskStateSpinner.getSelectedItem().toString());
-
             Task newTask = new Task(taskTitleInput,taskBodyInput,newDate, state);
-            database.taskDao().insertATask(newTask);
             Toast.makeText(AddTask.this, "Task Added", Toast.LENGTH_SHORT).show();
             finish();
         });
