@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#00000000"
+    tools:context=".frags.TaskListFrag">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/taskFragView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/hello_blank_fragment"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:typeface="normal" />
+
+</FrameLayout>

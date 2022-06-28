@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Taskmaster</string>
+    <string name="my_task">My Task</string>
+    <string name="add_task">Add Task</string>
+    <string name="do_something">Do Something</string>
+    <string name="add_task_button">ADD TASK</string>
+    <string name="total_tasks_0">Total Tasks: 0</string>
+    <string name="task_title">Task Title</string>
+    <string name="text_description">Text Description</string>
+    <string name="no_title">No Title</string>
+    <string name="no_body">No Body</string>
+    <string name="no_state">No State</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
