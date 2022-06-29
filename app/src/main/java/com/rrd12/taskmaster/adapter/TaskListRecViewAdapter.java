@@ -61,7 +61,7 @@ public class TaskListRecViewAdapter extends RecyclerView.Adapter<TaskListRecView
 
     @Override
     public int getItemCount() {
-        return tasks.size();
+        return 0;
     }
 
     public static class TaskListViewHolder extends RecyclerView.ViewHolder{

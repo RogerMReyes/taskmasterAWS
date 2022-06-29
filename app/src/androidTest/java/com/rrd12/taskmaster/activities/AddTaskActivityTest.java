@@ -1,4 +1,4 @@
-package com.rrd12.taskmaster;
+package com.rrd12.taskmaster.activities;
 
 
 import static androidx.test.espresso.Espresso.onView;
@@ -19,7 +19,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import com.rrd12.taskmaster.activities.MainActivity;
+import com.rrd12.taskmaster.R;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -30,47 +30,29 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MainActivityTest3 {
+public class AddTaskActivityTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
             new ActivityScenarioRule<>(MainActivity.class);
 
     @Test
-    public void mainActivityTest3() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+    public void addTaskActivityTest() {
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.taskThreeB), withText("Go"),
+                allOf(withId(R.id.addTaskButton), withText("ADD TASK"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                9),
+                                1),
                         isDisplayed()));
         materialButton.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(700);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         ViewInteraction textView = onView(
-                allOf(withId(R.id.taskDetailTitle), withText("Task Three"),
+                allOf(withId(R.id.textView), withText("Add Task"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView.check(matches(withText("Task Three")));
+        textView.check(matches(withText("Add Task")));
     }
 
     private static Matcher<View> childAtPosition(
