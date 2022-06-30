@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         tasks = new ArrayList<>();
 
+        pullTasksFromDB();
         taskListRecView();
         setUpAddTask();
         simpleButtonActivity(R.id.allTasksButton, AllTasks.class);
@@ -51,20 +52,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         updateUsername();
 
-        Amplify.API.query(
-                ModelQuery.list(TaskModel.class),
-                success ->{
-                    Log.i(TAG, "Read tasks successfully!");
-                    tasks.clear();
-                    for(TaskModel task : success.getData()){
-                        tasks.add(task);
-                    }
-                    runOnUiThread(() -> {
-                        adapter.notifyDataSetChanged();
-                    });
-                },
-                failure -> Log.i(TAG,"Did not read tasks successfully!")
-        );
+        pullTasksFromDB();
         taskListRecView();
     }
 
