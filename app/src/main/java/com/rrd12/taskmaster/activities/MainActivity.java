@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -11,10 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.rrd12.taskmaster.R;
 import com.rrd12.taskmaster.adapter.TaskListRecViewAdapter;
-import com.rrd12.taskmaster.models.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,8 +28,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String TASK_BODY = "Task Body";
     public static final String TASK_STATE = "Task State";
     public static final String TASK_SIZE = "size";
+    public static final String TAG = "homeactivity";
     TaskListRecViewAdapter adapter;
-    List<Task> tasks = null;
+    List<TaskModel> tasks = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        tasks = new ArrayList<>();
 
         taskListRecView();
-
         setUpAddTask();
         simpleButtonActivity(R.id.allTasksButton, AllTasks.class);
         simpleButtonActivity(R.id.settingB, Settings.class);
@@ -46,7 +51,21 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         updateUsername();
 
-        adapter.notifyDataSetChanged();
+        Amplify.API.query(
+                ModelQuery.list(TaskModel.class),
+                success ->{
+                    Log.i(TAG, "Read tasks successfully!");
+                    tasks.clear();
+                    for(TaskModel task : success.getData()){
+                        tasks.add(task);
+                    }
+                    runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                    });
+                },
+                failure -> Log.i(TAG,"Did not read tasks successfully!")
+        );
+        taskListRecView();
     }
 
     private <T> void simpleButtonActivity(int id, Class<T> c){
@@ -59,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpAddTask(){
         findViewById(R.id.addTaskButton).setOnClickListener(v ->{
             Intent goToAddTask = new Intent(MainActivity.this, AddTask.class);
-//            goToAddTask.putExtra(TASK_SIZE,tasks.size());
+            goToAddTask.putExtra(TASK_SIZE,tasks.size());
             startActivity(goToAddTask);
         });
     }
@@ -77,5 +96,22 @@ public class MainActivity extends AppCompatActivity {
         taskList.setLayoutManager(layoutManager);
         adapter = new TaskListRecViewAdapter(tasks, this);
         taskList.setAdapter(adapter);
+    }
+
+    private void pullTasksFromDB(){
+        Amplify.API.query(
+                ModelQuery.list(TaskModel.class),
+                success ->{
+                    Log.i(TAG, "Read tasks successfully!");
+                    tasks.clear();
+                    for(TaskModel task : success.getData()){
+                        tasks.add(task);
+                    }
+                    runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                    });
+                },
+                failure -> Log.i(TAG,"Did not read tasks successfully!")
+        );
     }
 }
