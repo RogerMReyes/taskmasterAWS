@@ -37,3 +37,11 @@ In Today's Lab we implemented Rooms which is a SQL database. A StateEnum was cre
 ![Lab29 Home](screenshots/lab29/Lab29_Home.PNG)
 ![Lab29 Task Add](screenshots/lab29/Lab29_AddTask.PNG)
 ![Lab29 Task Detail](screenshots/lab29/Lab29_TaskDetail.PNG)
+
+## Lab32
+
+### Summary
+
+All components of Rooms was removed and was replaced by AWS dynamoDB database architecture.
+
+![Lab32 Home](screenshots/lab32/Lab32_Home.PNG)

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "serviceName": "AppSync",
+    "defaultAuthType": {
+      "mode": "API_KEY",
+      "expirationTime": 7,
+      "keyDescription": ""
+    },
+    "conflictResolution": {},
+    "apiName": "amplifyDatasource",
+    "gqlSchemaPath": "C:\\Users\\roger\\Java\\CF401\\taskmasterAWS\\amplify\\backend\\api\\amplifyDatasource\\schema.graphql"
+  }
+}

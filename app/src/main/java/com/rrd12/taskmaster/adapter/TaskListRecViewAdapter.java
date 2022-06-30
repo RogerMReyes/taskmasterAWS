@@ -10,22 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.rrd12.taskmaster.R;
 import com.rrd12.taskmaster.activities.MainActivity;
 import com.rrd12.taskmaster.activities.TaskDetail;
-import com.rrd12.taskmaster.models.Task;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.List;
 
 public class TaskListRecViewAdapter extends RecyclerView.Adapter<TaskListRecViewAdapter.TaskListViewHolder> {
 
-    List<Task> tasks;
+    List<TaskModel> tasks;
     Context callingActivity;
 
-    public TaskListRecViewAdapter(List<Task> _tasks, Context _callingActivity) {
+    public TaskListRecViewAdapter(List<TaskModel> _tasks, Context _callingActivity) {
         this.tasks = _tasks;
         this.callingActivity = _callingActivity;
     }
@@ -42,11 +40,9 @@ public class TaskListRecViewAdapter extends RecyclerView.Adapter<TaskListRecView
         TextView taskFragView = holder.itemView.findViewById(R.id.taskFragView);
         String taskTitle = tasks.get(position).getTitle();
         String taskBody = tasks.get(position).getBody();
-        Date taskDate = tasks.get(position).getDateCreated();
-        String date = DateFormat.getDateInstance().format(taskDate);
         String taskState = tasks.get(position).getState().toString();
-        taskFragView.setText("-" + taskTitle + "\n"
-                                + date + "\n"
+        taskFragView.setText("-" + taskTitle
+                                 + "\n"
                                 + taskState);
 
         View taskView = holder.itemView;
@@ -61,7 +57,7 @@ public class TaskListRecViewAdapter extends RecyclerView.Adapter<TaskListRecView
 
     @Override
     public int getItemCount() {
-        return 0;
+        return tasks.size();
     }
 
     public static class TaskListViewHolder extends RecyclerView.ViewHolder{

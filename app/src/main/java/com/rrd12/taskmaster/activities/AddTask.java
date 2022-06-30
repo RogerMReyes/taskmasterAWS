@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,13 +14,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.core.model.temporal.Temporal;
+import com.amplifyframework.datastore.generated.model.StateEnum;
+import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.rrd12.taskmaster.R;
-import com.rrd12.taskmaster.models.StateEnum;
-import com.rrd12.taskmaster.models.Task;
 
 import java.util.Date;
 
 public class AddTask extends AppCompatActivity {
+    public static final String TAG = "AddTask";
 
 
     @Override
@@ -30,7 +36,7 @@ public class AddTask extends AppCompatActivity {
 
         setUpSpinner();
         setUpTotalTask();
-//        setUpAddButton(); //TODO: fix database association
+        setUpAddButton();
     }
 
     private void setUpSpinner() {
@@ -49,9 +55,19 @@ public class AddTask extends AppCompatActivity {
         addTask.setOnClickListener(v -> {
             String taskTitleInput = ((EditText)findViewById(R.id.taskTitleInput)).getText().toString();
             String taskBodyInput = ((EditText) findViewById(R.id.taskBodyInput)).getText().toString();
-            Date newDate = new Date();
-            StateEnum state = StateEnum.fromString(taskStateSpinner.getSelectedItem().toString());
-            Task newTask = new Task(taskTitleInput,taskBodyInput,newDate, state);
+            String currentDateString = com.amazonaws.util.DateUtils.formatISO8601Date(new Date());
+            TaskModel newTask = TaskModel.builder()
+                            .title(taskTitleInput)
+                                    .body(taskBodyInput)
+                                            .dateCreated(new Temporal.DateTime(currentDateString))
+                                                    .state((StateEnum)taskStateSpinner.getSelectedItem())
+                                                            .build();
+            Amplify.API.mutate(
+                    ModelMutation.create(newTask),
+                    successResponse -> Log.i(TAG, "AddTaskModelActivity.onCreate(): made a task successfully"),
+                    failureResponse -> Log.i(TAG, "AddTaskModelActivity.onCreate(): failed with this response: " + failureResponse)
+            );
+
             Toast.makeText(AddTask.this, "Task Added", Toast.LENGTH_SHORT).show();
             finish();
         });
