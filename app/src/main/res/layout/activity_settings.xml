@@ -36,11 +36,11 @@
         android:id="@+id/updateInfoB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="85dp"
         android:text="Update"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameInput" />
+        app:layout_constraintTop_toBottomOf="@+id/settingsTeamSpinner" />
 
     <TextView
         android:id="@+id/usernameLabel"
@@ -66,4 +66,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settingsTitle"
         tools:text="User" />
+
+    <Spinner
+        android:id="@+id/settingsTeamSpinner"
+        android:layout_width="391dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="99dp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameInput" />
 </androidx.constraintlayout.widget.ConstraintLayout>

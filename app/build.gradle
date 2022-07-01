@@ -22,14 +22,17 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
+    implementation 'com.amplifyframework:core:1.36.0'
     implementation 'com.amplifyframework:aws-api:1.36.0'
     implementation 'com.amplifyframework:aws-datastore:1.36.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'

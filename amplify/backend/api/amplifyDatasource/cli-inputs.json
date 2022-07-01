@@ -5,10 +5,12 @@
     "defaultAuthType": {
       "mode": "API_KEY",
       "expirationTime": 7,
-      "keyDescription": ""
+      "apiKeyExpirationDate": "2022-07-08T00:27:47.033Z",
+      "keyDescription": "update"
     },
     "conflictResolution": {},
     "apiName": "amplifyDatasource",
-    "gqlSchemaPath": "C:\\Users\\roger\\Java\\CF401\\taskmasterAWS\\amplify\\backend\\api\\amplifyDatasource\\schema.graphql"
+    "gqlSchemaPath": "C:\\Users\\roger\\Java\\CF401\\taskmasterAWS\\amplify\\backend\\api\\amplifyDatasource\\schema.graphql",
+    "additionalAuthTypes": []
   }
 }

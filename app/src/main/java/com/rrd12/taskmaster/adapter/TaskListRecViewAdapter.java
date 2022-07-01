@@ -37,7 +37,9 @@ public class TaskListRecViewAdapter extends RecyclerView.Adapter<TaskListRecView
 
     @Override
     public void onBindViewHolder(@NonNull TaskListViewHolder holder, int position) {
+
         TextView taskFragView = holder.itemView.findViewById(R.id.taskFragView);
+        String task = tasks.get(position).getId();
         String taskTitle = tasks.get(position).getTitle();
         String taskBody = tasks.get(position).getBody();
         String taskState = tasks.get(position).getState().toString();
@@ -51,6 +53,7 @@ public class TaskListRecViewAdapter extends RecyclerView.Adapter<TaskListRecView
             goToTaskDetail.putExtra(MainActivity.TASK_TITLE, taskTitle);
             goToTaskDetail.putExtra(MainActivity.TASK_BODY, taskBody);
             goToTaskDetail.putExtra(MainActivity.TASK_STATE, taskState);
+            goToTaskDetail.putExtra(MainActivity.TASK_ID,task);
             callingActivity.startActivity(goToTaskDetail);
         });
     }
