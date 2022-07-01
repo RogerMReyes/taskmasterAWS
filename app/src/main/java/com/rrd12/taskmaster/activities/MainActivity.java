@@ -12,9 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskModel;
+import com.amplifyframework.datastore.generated.model.Team;
 import com.rrd12.taskmaster.R;
 import com.rrd12.taskmaster.adapter.TaskListRecViewAdapter;
 
@@ -24,6 +26,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences preferences;
+    public static final String TASK_ID = "Task";
     public static final String TASK_TITLE = "Task Title";
     public static final String TASK_BODY = "Task Body";
     public static final String TASK_STATE = "Task State";
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setUpAddTask();
         simpleButtonActivity(R.id.allTasksButton, AllTasks.class);
         simpleButtonActivity(R.id.settingB, Settings.class);
+
     }
 
     @Override
@@ -87,12 +91,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pullTasksFromDB(){
+        String username = preferences.getString(Settings.TEAM, "SealSix");
         Amplify.API.query(
                 ModelQuery.list(TaskModel.class),
                 success ->{
                     Log.i(TAG, "Read tasks successfully!");
                     tasks.clear();
                     for(TaskModel task : success.getData()){
+                        String taskTeam = task.getTeam().getName();
+                        if(taskTeam.equals(username))
                         tasks.add(task);
                     }
                     runOnUiThread(() -> {

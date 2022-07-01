@@ -45,3 +45,12 @@ In Today's Lab we implemented Rooms which is a SQL database. A StateEnum was cre
 All components of Rooms was removed and was replaced by AWS dynamoDB database architecture.
 
 ![Lab32 Home](screenshots/lab32/Lab32_Home.PNG)
+
+## Lab33
+
+### Summary
+
+Updated database to have a bidirectional one team to many tasks relationship. Implemented a delete button on the task detail page that will do a get request by id and delete by task. Also set a restriction to only show tasks if the users set team matches the tasks assigned team.
+
+![Lab33 AddTask](screenshots/lab33/Lab33_AddTask.PNG)
+![Lab33 Setting](screenshots/lab33/Lab33_Setting.PNG)
