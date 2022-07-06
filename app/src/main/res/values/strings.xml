@@ -12,4 +12,13 @@
     <string name="no_state">No State</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Home</string>
+    <string name="placeholder">placeholder</string>
+    <string name="all_tasks">All Tasks</string>
+    <string name="settings">Settings</string>
+    <string name="my_tasks">My Tasks</string>
+    <string name="task_detail">Task Detail</string>
+    <string name="lorem_ipsum">Lorem Ipsum</string>
+    <string name="textview">TextView</string>
+    <string name="delete">Delete</string>
 </resources>
