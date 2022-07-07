@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 
 public class TaskMasterAmplifyApp extends Application {
@@ -15,6 +16,7 @@ public class TaskMasterAmplifyApp extends Application {
         super.onCreate();
         try {
             Log.i(TAG, "Initialized Amplify successfully");
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
         } catch (AmplifyException ae) {

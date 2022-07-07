@@ -54,3 +54,14 @@ Updated database to have a bidirectional one team to many tasks relationship. Im
 
 ![Lab33 AddTask](screenshots/lab33/Lab33_AddTask.PNG)
 ![Lab33 Setting](screenshots/lab33/Lab33_Setting.PNG)
+
+## Lab36
+
+### Summary
+
+Updated app to include Amplify Cognito. Login page is now default activity on startup and requires user to sign in. If user has not been created then the option to signup and verify is available. On login user is directed to main activity.
+
+## Rescources
+
+<a target="_blank" href="https://icons8.com/icon/12784/settings">Settings</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icon/lE7M0WfpkqrI/logout">Logout</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
