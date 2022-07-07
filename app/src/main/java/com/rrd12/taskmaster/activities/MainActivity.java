@@ -5,8 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
         pullTasksFromDB();
         taskListRecView();
         setUpAddTask();
-        simpleButtonActivity(R.id.allTasksButton, AllTasks.class);
-        simpleButtonActivity(R.id.settingB, Settings.class);
+        setUpSettings();
+        setUpLogout();
 
     }
 
@@ -60,11 +64,12 @@ public class MainActivity extends AppCompatActivity {
         taskListRecView();
     }
 
-    private <T> void simpleButtonActivity(int id, Class<T> c){
-        buttonGo(findViewById(id), new Intent(MainActivity.this, c));
-    }
-    private void buttonGo(Button button, Intent goWhere){
-        button.setOnClickListener(v-> startActivity(goWhere));
+    private void setUpSettings(){
+        ImageView settings = findViewById(R.id.settingB);
+        settings.setOnClickListener(v -> {
+            Intent goToSettings = new Intent(MainActivity.this, Settings.class);
+            startActivity(goToSettings);
+        });
     }
 
     private void setUpAddTask(){
@@ -108,5 +113,23 @@ public class MainActivity extends AppCompatActivity {
                 },
                 failure -> Log.i(TAG,"Did not read tasks successfully!")
         );
+    }
+
+    private void setUpLogout(){
+        ImageView logout = findViewById(R.id.logoutButton);
+        logout.setOnClickListener(v -> {
+            Amplify.Auth.signOut(
+                    () ->
+                    {
+                        Log.i(TAG, "Logout succeeded!");
+                    },
+                    failure ->
+                    {
+                        Log.i(TAG, "Logout failed: " + failure);
+                    }
+            );
+            Toast.makeText(MainActivity.this, "Logged Out!", Toast.LENGTH_SHORT).show();
+            finish();
+        });
     }
 }

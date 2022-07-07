@@ -12,12 +12,19 @@ query GetTaskModel($id: ID!) {
       name
       tasks {
         nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
   }
 }
 query ListTaskModels(
@@ -38,11 +45,56 @@ query ListTaskModels(
         name
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
     nextToken
+    startedAt
+  }
+}
+query SyncTaskModels(
+  $filter: ModelTaskModelFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncTaskModels(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      title
+      body
+      dateCreated
+      state
+      teamId
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
   }
 }
 query GetTeam($id: ID!) {
@@ -59,11 +111,18 @@ query GetTeam($id: ID!) {
         teamId
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       nextToken
+      startedAt
     }
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
   }
 }
 query ListTeams(
@@ -77,10 +136,44 @@ query ListTeams(
       name
       tasks {
         nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
     nextToken
+    startedAt
+  }
+}
+query SyncTeams(
+  $filter: ModelTeamFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncTeams(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      name
+      tasks {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
   }
 }
