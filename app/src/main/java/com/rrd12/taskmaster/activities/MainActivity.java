@@ -87,14 +87,6 @@ public class MainActivity extends AppCompatActivity {
         usernameTaskTitle.setText(formattedTitle);
     }
 
-    private void taskListRecView(){
-        RecyclerView taskList = findViewById(R.id.taskList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        taskList.setLayoutManager(layoutManager);
-        adapter = new TaskListRecViewAdapter(tasks, this);
-        taskList.setAdapter(adapter);
-    }
-
     private void pullTasksFromDB(){
         String username = preferences.getString(Settings.TEAM, "SealSix");
         Amplify.API.query(
@@ -113,6 +105,14 @@ public class MainActivity extends AppCompatActivity {
                 },
                 failure -> Log.i(TAG,"Did not read tasks successfully!")
         );
+    }
+
+    private void taskListRecView(){
+        RecyclerView taskList = findViewById(R.id.taskList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        taskList.setLayoutManager(layoutManager);
+        adapter = new TaskListRecViewAdapter(tasks, this);
+        taskList.setAdapter(adapter);
     }
 
     private void setUpLogout(){

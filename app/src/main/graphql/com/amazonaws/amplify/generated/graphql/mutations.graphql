@@ -9,6 +9,7 @@ mutation CreateTaskModel(
     body
     dateCreated
     state
+    taskImageKey
     teamId
     team {
       id
@@ -33,6 +34,7 @@ mutation UpdateTaskModel(
     body
     dateCreated
     state
+    taskImageKey
     teamId
     team {
       id
@@ -57,6 +59,7 @@ mutation DeleteTaskModel(
     body
     dateCreated
     state
+    taskImageKey
     teamId
     team {
       id
@@ -85,6 +88,7 @@ mutation CreateTeam(
         body
         dateCreated
         state
+        taskImageKey
         teamId
         createdAt
         updatedAt
@@ -109,6 +113,7 @@ mutation UpdateTeam(
         body
         dateCreated
         state
+        taskImageKey
         teamId
         createdAt
         updatedAt
@@ -133,6 +138,7 @@ mutation DeleteTeam(
         body
         dateCreated
         state
+        taskImageKey
         teamId
         createdAt
         updatedAt
