@@ -10,38 +10,44 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
+import com.amplifyframework.core.model.temporal.Temporal;
 import com.amplifyframework.datastore.generated.model.StateEnum;
 import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.rrd12.taskmaster.R;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class TaskDetail extends AppCompatActivity {
     public static final String TAG = "taskdetail";
-    Spinner teamSpinner = null;
-    Spinner stateSpinner = null;
-    TaskModel taskToEdit = null;
+    private Spinner teamSpinner = null;
+    private Spinner stateSpinner = null;
+    private TaskModel taskToEdit = null;
     private String s3ImageKey = "";
-    CompletableFuture<List<Team>> teamFuture;
-    CompletableFuture<TaskModel> taskFuture;
-    List<Team> teams = new ArrayList<>();
+    private CompletableFuture<List<Team>> teamFuture;
+    private CompletableFuture<TaskModel> taskFuture;
+    private final List<Team> teams = new ArrayList<>();
     ActivityResultLauncher<Intent> activityResultLauncher;
 
     @Override
@@ -55,6 +61,8 @@ public class TaskDetail extends AppCompatActivity {
         setTaskTitle();
         setUpSpinner();
         setUpAddImageButton();
+        setUpSaveButton();
+        getS3ImageKey();
     }
 
     private void setTaskTitle(){
@@ -71,6 +79,7 @@ public class TaskDetail extends AppCompatActivity {
             taskId = callingIntent.getStringExtra(MainActivity.TASK_ID);
         }
         String finalTaskId = taskId;
+        getTaskModel(finalTaskId);
         setUpDeleteButton(finalTaskId);
 
         TextView taskTitleView = findViewById(R.id.taskDetailTitle);
@@ -88,6 +97,33 @@ public class TaskDetail extends AppCompatActivity {
             taskBodyView.setText(R.string.no_body);
         }
     }
+
+    private void getTaskModel(String id){
+        Amplify.API.query(
+                ModelQuery.list(TaskModel.class),
+                success -> {
+                    Log.i(TAG, "Read products successfully");
+                    for (TaskModel task : success.getData()) {
+                        if (task.getId().equals(id)) {
+                            taskFuture.complete(task);
+                        }
+                    }
+                    runOnUiThread(() -> {
+                        // Update ui elements here
+                    });
+                },
+                failure -> Log.i(TAG, "Did not read products successfully")
+        );
+        try {
+            taskToEdit = taskFuture.get();
+        } catch (InterruptedException ie) {
+            Log.e(TAG, "InterruptedException while getting product");
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ee) {
+            Log.e(TAG, "ExecutionException while getting product");
+        }
+    }
+
 
     private void setUpSpinner() {
         teamSpinner = findViewById(R.id.taskDetailTeamSpin);
@@ -131,7 +167,6 @@ public class TaskDetail extends AppCompatActivity {
                     ModelQuery.get(TaskModel.class, id),
                     response -> {
                         Log.i(TAG, "successfully got task");
-                        taskFuture.complete(response.getData());
                         Amplify.API.mutate(
                                 ModelMutation.delete(response.getData()),
                                 success -> Log.i(TAG, "successfully deleted"),
@@ -142,6 +177,59 @@ public class TaskDetail extends AppCompatActivity {
             );
             finish();
         });
+    }
+
+    private void setUpSaveButton(){
+        Button saveButton = findViewById(R.id.taskDetailUpdateB);
+        StateEnum state = (StateEnum) stateSpinner.getSelectedItem();
+        saveButton.setOnClickListener(v -> {
+        List<Team> teams = null;
+            try{
+                teams = teamFuture.get();
+            } catch (InterruptedException ie){
+                Log.e(TAG, "InterruptedException while getting teams");
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ee) {
+                Log.e(TAG, "ExecutionException while getting teams");
+            }
+            String selectedTeamString = teamSpinner.getSelectedItem().toString();
+            Team selectedTeam = teams.stream()
+                    .filter(team -> team.getName().equals(selectedTeamString)).findAny().orElseThrow(RuntimeException::new);
+
+            TaskModel taskToUpdate = TaskModel.builder()
+                    .title(taskToEdit.getTitle())
+                    .id(taskToEdit.getId())
+                    .body(taskToEdit.getBody())
+                    .dateCreated(taskToEdit.getDateCreated())
+                    .state(state)
+                    .taskImageKey(s3ImageKey)
+                    .team(selectedTeam)
+                    .build();
+
+            Amplify.API.mutate(
+                    ModelMutation.update(taskToUpdate),
+                    successResponse -> Log.i(TAG, "Updated task successfully"),
+                    failureResponse -> Log.i(TAG, "Update failed with this response: " + failureResponse)
+            );
+
+            Toast.makeText(TaskDetail.this, "Task Updated", Toast.LENGTH_SHORT).show();
+            finish();
+        });
+    }
+
+    private void getS3ImageKey(){
+        s3ImageKey = taskToEdit.getTaskImageKey();
+        if (s3ImageKey != null && !s3ImageKey.isEmpty()){
+            Amplify.Storage.downloadFile(
+                    s3ImageKey,
+                    new File(getApplication().getFilesDir(), s3ImageKey),
+                    success -> {
+                        ImageView productImageView = findViewById(R.id.taskDetailImageV);
+                        productImageView.setImageBitmap(BitmapFactory.decodeFile(success.getFile().getPath()));
+                    },
+                    failure -> Log.e(TAG, "Unable to get image from S3 for the task with s3 key: " + s3ImageKey + "with error: " + failure.getMessage(), failure)
+            );
+        }
     }
 
     private void setUpAddImageButton(){
@@ -185,14 +273,14 @@ public class TaskDetail extends AppCompatActivity {
                 success -> {
                     Log.i(TAG, "Succeeded in uploading file to s3: " + success.getKey());
                     s3ImageKey = success.getKey();
-//                    ImageView taskImageView = findViewById() //TODO Display image
+                    ImageView taskImageView = findViewById(R.id.taskDetailImageV);
                     InputStream pickedImageInputStreamCopy = null;
                     try{
                         pickedImageInputStreamCopy = getContentResolver().openInputStream(pickedImageUri);
                     } catch(FileNotFoundException fnfe){
                         Log.e(TAG, "Could not get input stream from uri: " + fnfe.getMessage(), fnfe);
                     }
-//                    productImageView.setImageBitmap(BitmapFactory.decodeStream(pickedImageInputStreamCopy)); TODO Display image
+                    taskImageView.setImageBitmap(BitmapFactory.decodeStream(pickedImageInputStreamCopy));
                 },
                 failure -> Log.e(TAG, "Failure in uploading file to S3 with filename: " + pickedImageFileName + " with error: " + failure.getMessage())
         );

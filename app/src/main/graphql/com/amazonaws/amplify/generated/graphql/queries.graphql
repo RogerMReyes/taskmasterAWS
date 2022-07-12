@@ -6,6 +6,7 @@ query GetTaskModel($id: ID!) {
     body
     dateCreated
     state
+    taskImageKey
     teamId
     team {
       id
@@ -32,6 +33,7 @@ query ListTaskModels(
       body
       dateCreated
       state
+      taskImageKey
       teamId
       team {
         id
@@ -56,6 +58,7 @@ query GetTeam($id: ID!) {
         body
         dateCreated
         state
+        taskImageKey
         teamId
         createdAt
         updatedAt
