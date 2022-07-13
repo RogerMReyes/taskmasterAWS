@@ -1,9 +1,13 @@
 package com.rrd12.taskmaster.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -21,6 +25,8 @@ import com.amplifyframework.core.model.temporal.Temporal;
 import com.amplifyframework.datastore.generated.model.StateEnum;
 import com.amplifyframework.datastore.generated.model.TaskModel;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.rrd12.taskmaster.R;
 
 import java.util.ArrayList;
@@ -31,9 +37,15 @@ import java.util.concurrent.ExecutionException;
 
 public class AddTask extends AppCompatActivity {
     public static final String TAG = "AddTask";
-    Spinner teamSpinner = null;
-    CompletableFuture<List<Team>> teamFuture;
-    List<Team> teams = new ArrayList<>();
+    private Spinner teamSpinner = null;
+    private String currentLat = null;
+    private String currentLon = null;
+    private CompletableFuture<List<Team>> teamFuture;
+    private CompletableFuture<String> latFuture;
+    private CompletableFuture<String> lonFuture;
+    private List<Team> teams = new ArrayList<>();
+    private FusedLocationProviderClient fusedLocationClient = null;
+    private Geocoder geocoder;
 
 
     @Override
@@ -41,6 +53,10 @@ public class AddTask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
         teamFuture = new CompletableFuture<>();
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+        fusedLocationClient.flushLocations();
+        setUpLocation();
         setUpSpinner();
         setUpTotalTask();
         setUpAddButton();
@@ -85,6 +101,7 @@ public class AddTask extends AppCompatActivity {
         Button addTask = AddTask.this.findViewById(R.id.addTaskB);
         Spinner taskStateSpinner = findViewById(R.id.taskStateSpinner);
         addTask.setOnClickListener(v -> {
+//           setUpLocation();
             String taskTitleInput = ((EditText)findViewById(R.id.taskTitleInput)).getText().toString();
             String taskBodyInput = ((EditText) findViewById(R.id.taskBodyInput)).getText().toString();
             String currentDateString = com.amazonaws.util.DateUtils.formatISO8601Date(new Date());
@@ -106,6 +123,8 @@ public class AddTask extends AppCompatActivity {
                     .dateCreated(new Temporal.DateTime(currentDateString))
                     .state((StateEnum)taskStateSpinner.getSelectedItem())
                     .team(selectedTeam)
+                    .lat(currentLat)
+                    .lon(currentLon)
                     .build();
 
             Amplify.API.mutate(
@@ -124,5 +143,27 @@ public class AddTask extends AppCompatActivity {
         int size = callingIntent.getIntExtra(MainActivity.TASK_SIZE, 0);
         TextView totalTaskView = findViewById(R.id.totalTaskView);
         totalTaskView.setText("Total Tasks: " + size);
+    }
+
+    private void setUpLocation(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            if(location == null){
+                Log.e(TAG, "Location was null");
+            }
+            currentLat = Double.toString(location.getLatitude());
+            currentLon = Double.toString(location.getLongitude());
+            Log.i(TAG, "Our Lat: " + currentLat);
+            Log.i(TAG, "Our Lon: " + currentLon);
+        });
     }
 }

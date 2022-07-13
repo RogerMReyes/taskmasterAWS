@@ -33,6 +33,8 @@ public final class TaskModel implements Model {
   public static final QueryField DATE_CREATED = field("TaskModel", "dateCreated");
   public static final QueryField STATE = field("TaskModel", "state");
   public static final QueryField TASK_IMAGE_KEY = field("TaskModel", "taskImageKey");
+  public static final QueryField LAT = field("TaskModel", "Lat");
+  public static final QueryField LON = field("TaskModel", "Lon");
   public static final QueryField TEAM = field("TaskModel", "teamId");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String title;
@@ -40,6 +42,8 @@ public final class TaskModel implements Model {
   private final @ModelField(targetType="AWSDateTime") Temporal.DateTime dateCreated;
   private final @ModelField(targetType="StateEnum") StateEnum state;
   private final @ModelField(targetType="String") String taskImageKey;
+  private final @ModelField(targetType="String") String Lat;
+  private final @ModelField(targetType="String") String Lon;
   private final @ModelField(targetType="Team") @BelongsTo(targetName = "teamId", type = Team.class) Team team;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -67,6 +71,14 @@ public final class TaskModel implements Model {
       return taskImageKey;
   }
   
+  public String getLat() {
+      return Lat;
+  }
+  
+  public String getLon() {
+      return Lon;
+  }
+  
   public Team getTeam() {
       return team;
   }
@@ -79,13 +91,15 @@ public final class TaskModel implements Model {
       return updatedAt;
   }
   
-  private TaskModel(String id, String title, String body, Temporal.DateTime dateCreated, StateEnum state, String taskImageKey, Team team) {
+  private TaskModel(String id, String title, String body, Temporal.DateTime dateCreated, StateEnum state, String taskImageKey, String Lat, String Lon, Team team) {
     this.id = id;
     this.title = title;
     this.body = body;
     this.dateCreated = dateCreated;
     this.state = state;
     this.taskImageKey = taskImageKey;
+    this.Lat = Lat;
+    this.Lon = Lon;
     this.team = team;
   }
   
@@ -103,6 +117,8 @@ public final class TaskModel implements Model {
               ObjectsCompat.equals(getDateCreated(), taskModel.getDateCreated()) &&
               ObjectsCompat.equals(getState(), taskModel.getState()) &&
               ObjectsCompat.equals(getTaskImageKey(), taskModel.getTaskImageKey()) &&
+              ObjectsCompat.equals(getLat(), taskModel.getLat()) &&
+              ObjectsCompat.equals(getLon(), taskModel.getLon()) &&
               ObjectsCompat.equals(getTeam(), taskModel.getTeam()) &&
               ObjectsCompat.equals(getCreatedAt(), taskModel.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), taskModel.getUpdatedAt());
@@ -118,6 +134,8 @@ public final class TaskModel implements Model {
       .append(getDateCreated())
       .append(getState())
       .append(getTaskImageKey())
+      .append(getLat())
+      .append(getLon())
       .append(getTeam())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -135,6 +153,8 @@ public final class TaskModel implements Model {
       .append("dateCreated=" + String.valueOf(getDateCreated()) + ", ")
       .append("state=" + String.valueOf(getState()) + ", ")
       .append("taskImageKey=" + String.valueOf(getTaskImageKey()) + ", ")
+      .append("Lat=" + String.valueOf(getLat()) + ", ")
+      .append("Lon=" + String.valueOf(getLon()) + ", ")
       .append("team=" + String.valueOf(getTeam()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
@@ -162,6 +182,8 @@ public final class TaskModel implements Model {
       null,
       null,
       null,
+      null,
+      null,
       null
     );
   }
@@ -173,6 +195,8 @@ public final class TaskModel implements Model {
       dateCreated,
       state,
       taskImageKey,
+      Lat,
+      Lon,
       team);
   }
   public interface TitleStep {
@@ -187,6 +211,8 @@ public final class TaskModel implements Model {
     BuildStep dateCreated(Temporal.DateTime dateCreated);
     BuildStep state(StateEnum state);
     BuildStep taskImageKey(String taskImageKey);
+    BuildStep lat(String lat);
+    BuildStep lon(String lon);
     BuildStep team(Team team);
   }
   
@@ -198,6 +224,8 @@ public final class TaskModel implements Model {
     private Temporal.DateTime dateCreated;
     private StateEnum state;
     private String taskImageKey;
+    private String Lat;
+    private String Lon;
     private Team team;
     @Override
      public TaskModel build() {
@@ -210,6 +238,8 @@ public final class TaskModel implements Model {
           dateCreated,
           state,
           taskImageKey,
+          Lat,
+          Lon,
           team);
     }
     
@@ -245,6 +275,18 @@ public final class TaskModel implements Model {
     }
     
     @Override
+     public BuildStep lat(String lat) {
+        this.Lat = lat;
+        return this;
+    }
+    
+    @Override
+     public BuildStep lon(String lon) {
+        this.Lon = lon;
+        return this;
+    }
+    
+    @Override
      public BuildStep team(Team team) {
         this.team = team;
         return this;
@@ -262,13 +304,15 @@ public final class TaskModel implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String title, String body, Temporal.DateTime dateCreated, StateEnum state, String taskImageKey, Team team) {
+    private CopyOfBuilder(String id, String title, String body, Temporal.DateTime dateCreated, StateEnum state, String taskImageKey, String lat, String lon, Team team) {
       super.id(id);
       super.title(title)
         .body(body)
         .dateCreated(dateCreated)
         .state(state)
         .taskImageKey(taskImageKey)
+        .lat(lat)
+        .lon(lon)
         .team(team);
     }
     
@@ -295,6 +339,16 @@ public final class TaskModel implements Model {
     @Override
      public CopyOfBuilder taskImageKey(String taskImageKey) {
       return (CopyOfBuilder) super.taskImageKey(taskImageKey);
+    }
+    
+    @Override
+     public CopyOfBuilder lat(String lat) {
+      return (CopyOfBuilder) super.lat(lat);
+    }
+    
+    @Override
+     public CopyOfBuilder lon(String lon) {
+      return (CopyOfBuilder) super.lon(lon);
     }
     
     @Override
