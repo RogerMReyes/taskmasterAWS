@@ -5,6 +5,8 @@ type TaskModel @model @auth(rules: [{allow: public}]){
   dateCreated: AWSDateTime
   state: StateEnum
   taskImageKey: String
+  Lat: String
+  Lon: String
   teamId: ID! @index(name: "byTeam", sortKeyFields:["title"])
   team: Team @belongsTo(fields: ["teamId"])
 }

@@ -91,7 +91,7 @@ public class TaskDetail extends AppCompatActivity {
             taskTitleView.setText(R.string.no_title);
         }
         if(taskBody != null){
-            taskBodyView.setText(taskBody);
+            taskBodyView.setText(taskBody + "\n" + taskToEdit.getLat() + "\n" + taskToEdit.getLon());
         }
         else{
             taskBodyView.setText(R.string.no_body);
@@ -204,6 +204,8 @@ public class TaskDetail extends AppCompatActivity {
                     .state(state)
                     .taskImageKey(s3ImageKey)
                     .team(selectedTeam)
+                    .lat(taskToEdit.getLat())
+                    .lon(taskToEdit.getLon())
                     .build();
 
             Amplify.API.mutate(

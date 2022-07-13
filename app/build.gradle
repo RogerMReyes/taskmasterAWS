@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.amplifyframework:core:1.36.0'
     implementation 'com.amplifyframework:aws-api:1.36.0'
     implementation 'com.amplifyframework:aws-datastore:1.36.0'
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     implementation 'androidx.appcompat:appcompat:1.4.2'
