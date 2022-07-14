@@ -61,6 +61,18 @@ Updated database to have a bidirectional one team to many tasks relationship. Im
 
 Updated app to include Amplify Cognito. Login page is now default activity on startup and requires user to sign in. If user has not been created then the option to signup and verify is available. On login user is directed to main activity.
 
+![Lab36 Home](screenshots/lab36/Lab36_Home.PNG)
+![Lab36 SignUp](screenshots/lab36/Lab36_SignUp.PNG)
+
+## Lab37 && 38
+
+### Summary
+
+Added S3 bucket implementation in order to upload images and Location to pull location of task when created
+
+![Lab37 TaskDetail](screenshots/lab37/Lab37_TaskDetail.PNG)
+
+
 ## Rescources
 
 <a target="_blank" href="https://icons8.com/icon/12784/settings">Settings</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
